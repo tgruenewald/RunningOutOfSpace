@@ -82,6 +82,7 @@ public class Player : MonoBehaviour {
 
 		if (Input.GetKeyDown(KeyCode.E)) {
 			// show context menu
+
 		
 		}
 		if (Input.GetKeyDown(KeyCode.Space)) {
@@ -189,10 +190,18 @@ public class Player : MonoBehaviour {
         transform.localScale = theScale;
     }	
 	void OnTriggerEnter2D(Collider2D coll){
-		if (coll.gameObject.tag == "cage" ) {
+		if (coll.gameObject.tag == "cell" ) {
 			// start black jack
-			Debug.Log("touch cage");
+			Debug.Log("touch cell:  " + coll.gameObject.name);
 			isTouchingMine = true;
+			RaycastHit2D hit = Physics2D.Raycast(coll.gameObject.transform.position, Vector2.up*5);
+            //If something was hit, the RaycastHit2D.collider will not be null.
+            if (hit.collider != null)
+            {
+
+                Debug.Log("2collider touching:  " + hit.collider.name);
+            }			
+
 		}		
 		if (coll.gameObject.tag == "stand" ) {
 			// start black jack
