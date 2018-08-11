@@ -63,33 +63,13 @@ public class Player : MonoBehaviour {
 		// 	animator.SetBool("isMoving", false);
 		// }
 
-
-		if (Input.GetKeyDown("e")) {
-
-			if (isTouchingMine) {
-				if (GameState.gold >=10) {
-					GameObject.Find("StatusText").GetComponent<Text>().text = "Too much gold";
-				}
-				else {
-					GameState.gold += 1;
-					Debug.Log("Gold: " + GameState.gold);
-					GameObject.Find("GoldText").GetComponent<Text>().text = "" + GameState.gold;
-				}
-
-			}
-			if (isTouchingWall && GameState.stone > 0) {
-				Vector3 v = new Vector3(0.38f, 0.3f, 1f);
-				wall.GetComponent<Transform>().localScale = v;
-				GameState.stone--;
-				wall.tag = "wall";
-				GameObject.Find("StoneText").GetComponent<Text>().text = "" + GameState.stone;
-				wall.GetComponent<BoxCollider2D>().isTrigger = false;
-			}
-
-			if (GameObject.FindGameObjectsWithTag("broken_wall").Length == 0) {
-				ladder.GetComponent<SpriteRenderer>().enabled = true;
-				ladder.GetComponent<BoxCollider2D>().enabled = true;
-			}			
+		if (Input.GetKeyDown(KeyCode.E)) {
+			// show context menu
+		
+		}
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			// space to pick up
+		
 		}
 
 
