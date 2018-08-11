@@ -11,7 +11,9 @@ public class Player : MonoBehaviour {
 		public LayerMask blockingLayer;		
 				private float inverseMoveTime;			//Used to make movement more efficient.
 		public float moveTime = 0.1f;			//Time it will take object to move, in seconds.
-
+    public Sprite front;
+    public Sprite left;
+    public Sprite back;
 	private float move;
 	public float maxSpeed = 3.0f;
 	public float jumpForce = 20f;
@@ -112,7 +114,26 @@ public class Player : MonoBehaviour {
 			//If Move returns true, meaning Player was able to move into an empty space.
 				Move (horizontal, vertical, out hit);
 			}
-
+            switch( horizontal)
+            {
+                case -1:
+                this.GetComponent<SpriteRenderer>().sprite = left;
+                this.GetComponent<SpriteRenderer>().flipX = false;
+                break;
+                case 1:
+                this.GetComponent<SpriteRenderer>().sprite = left;
+                this.GetComponent<SpriteRenderer>().flipX = true;
+                break;
+            }
+            switch(vertical)
+            {
+                case 1:
+                this.GetComponent<SpriteRenderer>().sprite = back;
+                break;
+                case -1:
+                this.GetComponent<SpriteRenderer>().sprite = front;
+                break;
+            }
 
     //  var dir = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
     //  transform.position += dir * 5.0f * Time.deltaTime;
@@ -149,7 +170,7 @@ public class Player : MonoBehaviour {
 				//Return true to say that Move was successful
 				return true;
 			}
-			
+	
 			//If something was hit, return false, Move was unsuccesful.
 			return false;
 		}
