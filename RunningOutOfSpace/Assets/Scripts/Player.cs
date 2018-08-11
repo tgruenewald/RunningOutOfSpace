@@ -23,6 +23,8 @@ public class Player : MonoBehaviour {
 	private Animator animator;
 	private bool facingRight = false;
 
+	private bool stillMoving = false;
+
 	
 	private bool isTouchingMine = false;
 	private bool isTouchingWall = false;
@@ -30,6 +32,9 @@ public class Player : MonoBehaviour {
 	private GameObject wall = null;
 	private GameObject ladder = null;
 	// Use this for initialization
+
+	public Cell currentCell = null;
+	Cell targetCell = null;
 	 Vector3 pos;                                // For movement
  float speed = 2.0f;  
 
@@ -55,6 +60,8 @@ public class Player : MonoBehaviour {
 			
 			//By storing the reciprocal of the move time we can use it by multiplying instead of dividing, this is more efficient.
 			inverseMoveTime = 1f / moveTime;
+
+			currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
 
  //.GetComponent<Button>().interactable  = false;	
 
@@ -91,50 +98,76 @@ public class Player : MonoBehaviour {
 			// space to pick up
 		
 		}
+			if (!stillMoving) {
+				int horizontal = 0;  	//Used to store the horizontal move direction.
+				int vertical = 0;		//Used to store the vertical move direction.
+				
+				//Check if we are running either in the Unity editor or in a standalone build.
+				
+				//Get input from the input manager, round it to an integer and store in horizontal to set x axis move direction
+				horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
+				
+				//Get input from the input manager, round it to an integer and store in vertical to set y axis move direction
+				vertical = (int) (Input.GetAxisRaw ("Vertical"));		
 
-			int horizontal = 0;  	//Used to store the horizontal move direction.
-			int vertical = 0;		//Used to store the vertical move direction.
-			
-			//Check if we are running either in the Unity editor or in a standalone build.
-			
-			//Get input from the input manager, round it to an integer and store in horizontal to set x axis move direction
-			horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
-			
-			//Get input from the input manager, round it to an integer and store in vertical to set y axis move direction
-			vertical = (int) (Input.GetAxisRaw ("Vertical"));		
+				if(horizontal != 0)
+				{
+					vertical = 0;
+				}
 
-			if(horizontal != 0)
-			{
-				vertical = 0;
+				if(horizontal != 0 || vertical != 0)
+				{
+					RaycastHit2D hit;
+					if (horizontal > 0) { 
+						// move forward
+						targetCell = currentCell.getForward();
+
+
+					}
+					if (horizontal < 0) {
+						// move backward
+						targetCell = currentCell.getReverse();
+					}
+
+					if (vertical > 0) { 
+						// move up
+						targetCell = currentCell.getUp();					
+					}
+
+					if (vertical < 0) {
+						// move down
+						targetCell = currentCell.getDown();					
+					}
+				
+				//If Move returns true, meaning Player was able to move into an empty space.
+					if (targetCell != null) {
+						stillMoving = true;
+						StartCoroutine (SmoothMovement (targetCell.transform.GetChild(0).transform.position));
+						// Move (targetCell.transform.GetChild(0).transform.position.x, targetCell.transform.GetChild(0).transform.position.y, out hit);
+					}
+
+				}
+				switch( horizontal)
+				{
+					case -1:
+					this.GetComponent<SpriteRenderer>().sprite = left;
+					this.GetComponent<SpriteRenderer>().flipX = false;
+					break;
+					case 1:
+					this.GetComponent<SpriteRenderer>().sprite = left;
+					this.GetComponent<SpriteRenderer>().flipX = true;
+					break;
+				}
+				switch(vertical)
+				{
+					case 1:
+					this.GetComponent<SpriteRenderer>().sprite = back;
+					break;
+					case -1:
+					this.GetComponent<SpriteRenderer>().sprite = front;
+					break;
+				}
 			}
-
-			if(horizontal != 0 || vertical != 0)
-			{
-				RaycastHit2D hit;
-			
-			//If Move returns true, meaning Player was able to move into an empty space.
-				Move (horizontal, vertical, out hit);
-			}
-            switch( horizontal)
-            {
-                case -1:
-                this.GetComponent<SpriteRenderer>().sprite = left;
-                this.GetComponent<SpriteRenderer>().flipX = false;
-                break;
-                case 1:
-                this.GetComponent<SpriteRenderer>().sprite = left;
-                this.GetComponent<SpriteRenderer>().flipX = true;
-                break;
-            }
-            switch(vertical)
-            {
-                case 1:
-                this.GetComponent<SpriteRenderer>().sprite = back;
-                break;
-                case -1:
-                this.GetComponent<SpriteRenderer>().sprite = front;
-                break;
-            }
 
     //  var dir = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
     //  transform.position += dir * 5.0f * Time.deltaTime;
@@ -145,7 +178,7 @@ public class Player : MonoBehaviour {
                        // Speed of movement
 		//Move returns true if it is able to move and false if not. 
 		//Move takes parameters for x direction, y direction and a RaycastHit2D to check collision.
-		protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
+		protected bool Move (float xDir, float yDir, out RaycastHit2D hit)
 		{
 			//Store start position to move from, based on objects current transform position.
 			Vector2 start = transform.position;
@@ -199,6 +232,8 @@ public class Player : MonoBehaviour {
 				//Return and loop until sqrRemainingDistance is close enough to zero to end the function
 				yield return null;
 			}
+			currentCell = targetCell;
+			stillMoving = false;
 		}     
 
 
@@ -211,19 +246,12 @@ public class Player : MonoBehaviour {
         transform.localScale = theScale;
     }	
 	void OnTriggerEnter2D(Collider2D coll){
-		if (coll.gameObject.tag == "cell" ) {
-			// start black jack
-			Debug.Log("touch cell:  " + coll.gameObject.name);
-			isTouchingMine = true;
-			RaycastHit2D hit = Physics2D.Raycast(coll.gameObject.transform.position, Vector2.up*5);
-            //If something was hit, the RaycastHit2D.collider will not be null.
-            if (hit.collider != null)
-            {
+		// if (coll.gameObject.tag == "cell" ) {
+		// 	// start black jack
+		// 	Debug.Log("touch cell:  " + coll.gameObject.name);
+		// 	currentCell = coll.gameObject.GetComponent<Cell>();
 
-                Debug.Log("2collider touching:  " + hit.collider.name);
-            }			
-
-		}		
+		// }		
 		if (coll.gameObject.tag == "stand" ) {
 			// start black jack
 			Debug.Log("Entering stand");
