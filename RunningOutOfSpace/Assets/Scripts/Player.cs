@@ -189,9 +189,9 @@ public class Player : MonoBehaviour {
         transform.localScale = theScale;
     }	
 	void OnTriggerEnter2D(Collider2D coll){
-		if (coll.gameObject.tag == "gold" ) {
+		if (coll.gameObject.tag == "cage" ) {
 			// start black jack
-			Debug.Log("touch gold");
+			Debug.Log("touch cage");
 			isTouchingMine = true;
 		}		
 		if (coll.gameObject.tag == "stand" ) {
