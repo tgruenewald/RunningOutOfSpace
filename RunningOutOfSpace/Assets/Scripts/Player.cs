@@ -279,7 +279,7 @@ public class Player : MonoBehaviour {
 					if (targetItem != null) {
 						if (targetItem == "good_cage") {
 							//placeItemInCell(lastDirection, removeTopItem());
-							addAnimalToCage(lastDirection, removeTopItem());	
+							addAnimalToCage(lastDirection);	
 
 							// parent the animal to the cage 					
 						}						
@@ -383,6 +383,55 @@ public class Player : MonoBehaviour {
 
 	}
 
+	string getCagedAnimalName(Transform cell) {
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" ))
+				return currentItem;
+		}
+		return null;
+	}
+
+	void enableSpriteByName(Transform cell, string name) {
+		Debug.Log("finding sprite:  " + name);
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if (currentItem == name) {
+				animal.GetComponent<SpriteRenderer>().enabled = true;
+			}
+		}		
+	}
+
+	bool incrCagedAnimal(Transform cell) {
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+
+			}
+			else {
+				if (currentItem.StartsWith("num_")) {
+					if (animal.GetComponent<SpriteRenderer>().enabled) {
+						// then this is the last one, so find next number
+						string n = currentItem.Replace("num_", "");
+						if (int.Parse(n) >= 5) {
+							return false;
+						}
+						animal.GetComponent<SpriteRenderer>().enabled = false;
+						int next = int.Parse(n) + 1;
+						enableSpriteByName(cell, "num_" + next);
+						return true;
+					}
+				}
+			}
+			
+		}
+		return true;
+	}
+
+	void emptyCage(Transform cell) {
+		
+	}	
+
 	Transform findCage(Transform cell) {
 		foreach (Transform child in cell) {
 			if (child.gameObject.name == "cage(Clone)") {
@@ -393,11 +442,23 @@ public class Player : MonoBehaviour {
 		return null;
 	}
 
-	void addAnimalToCage(Direction dir, Transform animal) {
+	void addAnimalToCage(Direction dir) {
 		Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
 		if (cage != null) {
-			animal.parent = cage;
-			animal.transform.localPosition = new Vector3(-2f, -1f, 0f);
+			
+			string existingAnimal = getCagedAnimalName(cage);
+			Debug.Log("Existing animal:  " + existingAnimal);
+			string topAnimal = NameOfTopOfStack() + "(Clone)";
+			if (existingAnimal == null || topAnimal == existingAnimal) {
+				if (incrCagedAnimal(cage)) {
+					// then there is enough room
+					Transform animal =  removeTopItem();
+					animal.parent = cage;
+					animal.transform.localPosition = new Vector3(-2f, -1f, 0f);					
+				}
+
+			}
+
 		}
 	}
 	Transform removeTopItem() {
