@@ -95,52 +95,7 @@ public class Player : MonoBehaviour {
 		// 	animator.SetBool("isMoving", false);
 		// }
 
-		if (Input.GetKeyDown(KeyCode.E)) {
-			// pick up something
 
-			if (thingsBeingHeld < 6 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
-							// Transform[] items = GetComponentsInChildren<Transform>();
-
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
-				thingsBeingHeld++;
-
-
-				// int count = 0;
-				// Transform targetChild = null;
-				// foreach (Transform child in transform) {
-				// 	targetChild = child;
-				// 	count++;
-				// 	if (count > thingsBeingHeld) {
-				// 		break;
-				// 	}
-				// }					
-				// targetChild.GetComponent<SpriteRenderer>().sprite = currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite;
-				// // inventory[thingsBeingHeld] = Instantiate(currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent);
-				// Destroy(currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent);
-				// thingsBeingHeld++;				
-
-			}
-
-		
-		}
-		if (Input.GetKeyDown(KeyCode.Space)) {
-			// drop something
-			Debug.Log("Dropping");
-			if (thingsBeingHeld > 0 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
-				
-				Transform[] items = GetComponentsInChildren<Transform>();	
-				Debug.Log("Dropping " + items[thingsBeingHeld].name);
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
-				items[thingsBeingHeld].parent = currentCell.getFacingDirection(lastDirection).transform;
-				thingsBeingHeld--;
-			}
-			
-
-		
-		}
 			if (!stillMoving) {
 				int horizontal = 0;  	//Used to store the horizontal move direction.
 				int vertical = 0;		//Used to store the vertical move direction.
@@ -215,6 +170,39 @@ public class Player : MonoBehaviour {
 					break;
 				}
 			}
+
+		if (Input.GetKeyDown(KeyCode.E)) {
+			// pick up something
+
+			if (targetCell != null && thingsBeingHeld < 6 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
+							// Transform[] items = GetComponentsInChildren<Transform>();
+
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
+				thingsBeingHeld++;
+
+
+			}
+
+		
+		}
+		if (Input.GetKeyDown(KeyCode.Space)) {
+			// drop something
+			Debug.Log("Dropping");
+			if (targetCell != null &&  thingsBeingHeld > 0 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
+				
+				Transform[] items = GetComponentsInChildren<Transform>();	
+				Debug.Log("Dropping " + items[thingsBeingHeld].name);
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
+				items[thingsBeingHeld].parent = currentCell.getFacingDirection(lastDirection).transform;
+				thingsBeingHeld--;
+			}
+			
+
+		
+		}			
 
     //  var dir = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"), 0);
     //  transform.position += dir * 5.0f * Time.deltaTime;
