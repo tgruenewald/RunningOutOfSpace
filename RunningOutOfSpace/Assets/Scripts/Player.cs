@@ -36,6 +36,7 @@ public class Player : MonoBehaviour {
 	public GameObject[] inventory = new GameObject[6];
 
 	public Vector3[] positionStack = new Vector3[]  { new Vector3(0,6f,0),
+													  new Vector3(0,9.8f,0), 
 													  new Vector3(0,13.5f,0), 
 													  new Vector3(0,17.3f,0), 
 													  new Vector3(0,20.5f,0), 
