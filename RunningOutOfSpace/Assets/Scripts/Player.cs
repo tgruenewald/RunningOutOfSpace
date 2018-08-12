@@ -29,6 +29,9 @@ public class Player : MonoBehaviour {
 	private bool isTouchingMine = false;
 	private bool isTouchingWall = false;
 
+	private int thingsBeingHeld = 0;
+	public GameObject[] inventory = new GameObject[6];
+
 	private GameObject wall = null;
 	private GameObject ladder = null;
 	// Use this for initialization
@@ -90,12 +93,49 @@ public class Player : MonoBehaviour {
 		// }
 
 		if (Input.GetKeyDown(KeyCode.E)) {
-			// show context menu
+			// pick up something
+
+			if (thingsBeingHeld < 6 && currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
+							// Transform[] items = GetComponentsInChildren<Transform>();
+
+				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
+				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
+				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
+				thingsBeingHeld++;
+
+
+				// int count = 0;
+				// Transform targetChild = null;
+				// foreach (Transform child in transform) {
+				// 	targetChild = child;
+				// 	count++;
+				// 	if (count > thingsBeingHeld) {
+				// 		break;
+				// 	}
+				// }					
+				// targetChild.GetComponent<SpriteRenderer>().sprite = currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite;
+				// // inventory[thingsBeingHeld] = Instantiate(currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent);
+				// Destroy(currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent);
+				// thingsBeingHeld++;				
+
+			}
 
 		
 		}
 		if (Input.GetKeyDown(KeyCode.Space)) {
-			// space to pick up
+			// drop something
+			Debug.Log("Dropping");
+			if (thingsBeingHeld > 0 && currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
+				
+				Transform[] items = GetComponentsInChildren<Transform>();	
+				Debug.Log("Dropping " + items[thingsBeingHeld].name);
+				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
+				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getForward().transform.position;
+				items[thingsBeingHeld].parent = currentCell.getForward().transform;
+				thingsBeingHeld--;
+			}
+			
+
 		
 		}
 			if (!stillMoving) {
@@ -140,7 +180,7 @@ public class Player : MonoBehaviour {
 					}
 				
 				//If Move returns true, meaning Player was able to move into an empty space.
-					if (targetCell != null) {
+					if (targetCell != null && targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
 						stillMoving = true;
 						StartCoroutine (SmoothMovement (targetCell.transform.GetChild(0).transform.position));
 						// Move (targetCell.transform.GetChild(0).transform.position.x, targetCell.transform.GetChild(0).transform.position.y, out hit);
