@@ -8,7 +8,7 @@ public class SpawnPoint : MonoBehaviour {
 		if (playerDroplet != null)
 		{
 			Debug.Log("Getting existing player");
-			playerDroplet.SpawnAt(playerDroplet.gameObject);
+			//playerDroplet.SpawnAt(playerDroplet.gameObject);
 
 		}
 		else
@@ -26,7 +26,7 @@ public class SpawnPoint : MonoBehaviour {
 
 	public static void SwitchToLevel(GameObject playerObject)
 	{
-		
+
 		playerObject.GetComponent<Player>().currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
 		//GameState.GetPlayerDroplet().StopAllAudio();
 	}	

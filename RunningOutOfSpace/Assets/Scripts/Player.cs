@@ -100,6 +100,7 @@ public class Player : MonoBehaviour {
 		Debug.Log("Level Loaded");
 		Debug.Log(scene.name);
 		Debug.Log(mode);
+		Camera.main.GetComponent<Camera2DFollow>().target = gameObject.transform;
 		currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
 	}
 	
@@ -126,6 +127,7 @@ public class Player : MonoBehaviour {
 			if (currentCell != null && currentCell.name.StartsWith("exit")) {
 				string scene = currentCell.name;
 				SpawnPoint.SwitchToLevel (this.gameObject);
+				GameState.SetPlayerDroplet(this.gameObject);
 				currentCell = null;
 				SceneManager.LoadScene(scene);
 			}
@@ -224,7 +226,7 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			// drop something
 			Debug.Log("Dropping");
-			if (targetCell != null &&  thingsBeingHeld > 0 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
+			if (targetCell != null &&  thingsBeingHeld > 0 && currentCell != null && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
 				Stack<Transform> stack = new Stack<Transform>();
 				// Transform[] items = GetComponentsInChildren<Transform>();	
 				foreach( Transform tr in transform) {

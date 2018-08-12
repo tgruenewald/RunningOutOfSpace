@@ -12,9 +12,22 @@ public class Cell : MonoBehaviour {
 	public float x;
 	public float y;
 
+
+    public float RandomMax;
+    public float UnicornPercent;
+    public float RaptorPercent;
+    public float BunnyPercent;
+    public float FoxPercent;
+    public float ChickenPercent;
+    public float WoodPercent;
+    public float HayPercent;	
+
 	// Use this for initialization
 	void Start () {
 		 FindNeighbours();
+		if (this.gameObject.name == "loot_drop") {	
+			StartCoroutine(RandomlyGetLoot(2f));
+		}	 
 	}
 
 	public Cell getFacingDirection(Player.Direction direction) {
@@ -85,6 +98,77 @@ public class Cell : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
+
 		
+	}
+
+    private IEnumerator RandomlyGetLoot(float waitTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(waitTime);
+			if (transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
+				// if not, randomly find an item
+				// GameObject loot = GetLoot("wood");
+				 GenerateLoot();
+				
+
+			}            
+
+
+        }
+    }	
+
+	GameObject GetLoot(string item) {
+		var gObj = (GameObject)Instantiate(Resources.Load("prefab/" + item), GetComponent<Transform>().position, GetComponent<Transform>().rotation) ;
+		transform.GetChild(0).GetComponent<TileContent>().cellContent = gObj;
+		return gObj;
+		// currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
+		// lastChild.parent = currentCell.getFacingDirection(lastDirection).transform;		
+	}
+
+	void GenerateLoot() {
+		float RanValue = Random.Range(0, RandomMax +1);
+			Debug.Log("Random value:  " + RanValue);
+            if (RanValue <= UnicornPercent)
+            {
+				GetLoot("unicorn");
+                // return(Unicorn);
+            }
+            else if (RanValue <= RaptorPercent && RanValue > UnicornPercent)
+            {
+				GetLoot("raptor");
+                //return(Raptor);
+            }
+            else if (RanValue <= BunnyPercent && RanValue > RaptorPercent)
+            {
+				GetLoot("rabbit");
+                //return(Bunny);
+            }
+            else if (RanValue <= FoxPercent && RanValue > BunnyPercent)
+            {
+				GetLoot("fox");
+                //return(Fox);
+            }
+            else if (RanValue <= ChickenPercent && RanValue > FoxPercent)
+            {
+				GetLoot("chicken");
+                //return(Chicken);
+            }
+            else if (RanValue <= WoodPercent && RanValue > ChickenPercent)
+            {
+				GetLoot("wood");
+                //return(Hay);
+            }			
+            else if (RanValue <= HayPercent && RanValue > WoodPercent)
+            {
+				GetLoot("hay");
+                //return(Hay);
+            }
+            else
+            {
+				GetLoot("wood");
+                //return(nothing);
+            }		
 	}
 }
