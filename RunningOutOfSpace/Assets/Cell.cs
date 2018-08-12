@@ -12,7 +12,7 @@ public class Cell : MonoBehaviour {
 	public float x;
 	public float y;
 
-
+	// for random selection
     public float RandomMax;
     public float UnicornPercent;
     public float RaptorPercent;
