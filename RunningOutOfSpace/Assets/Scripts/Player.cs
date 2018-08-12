@@ -217,16 +217,17 @@ public class Player : MonoBehaviour {
 					break;
 				}
 			}
-		if (Input.GetKeyDown(KeyCode.Q)) {
-			Debug.Log("Target cell name: " + targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name);
-
+		if (Input.GetKeyDown(KeyCode.F)) {
+			//Debug.Log("Target cell name: " + targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name);
+			// get one animal from cage
+			removeAnimalFromCage(lastDirection);
 		}
 		if (Input.GetKeyDown(KeyCode.E)) {
 			// pick up something
 
 			if (targetCell != null && thingsBeingHeld < 6 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
 							// Transform[] items = GetComponentsInChildren<Transform>();
-
+				// pick up animal
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = positionStack[thingsBeingHeld];			
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
@@ -391,7 +392,15 @@ public class Player : MonoBehaviour {
 		}
 		return null;
 	}
-
+	Transform getACagedAnimal(Transform cell) {
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+				return animal;
+			}
+		}
+		return null;		
+	}
 	void enableSpriteByName(Transform cell, string name) {
 		Debug.Log("finding sprite:  " + name);
 		foreach (Transform animal in cell.transform) {
@@ -401,6 +410,32 @@ public class Player : MonoBehaviour {
 			}
 		}		
 	}
+
+	bool decrCagedAnimal(Transform cell) {
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+
+			}
+			else {
+				if (currentItem.StartsWith("num_")) {
+					if (animal.GetComponent<SpriteRenderer>().enabled) {
+						// then this is the last one, so find next number
+						string n = currentItem.Replace("num_", "");
+						if (int.Parse(n) == 0) {
+							return false;
+						}
+						animal.GetComponent<SpriteRenderer>().enabled = false;
+						int next = int.Parse(n) - 1;
+						enableSpriteByName(cell, "num_" + next);
+						return true;
+					}
+				}
+			}
+			
+		}
+		return true;
+	}	
 
 	bool incrCagedAnimal(Transform cell) {
 		foreach (Transform animal in cell.transform) {
@@ -440,6 +475,27 @@ public class Player : MonoBehaviour {
 
 		}
 		return null;
+	}
+
+	void removeAnimalFromCage(Direction dir) {
+		// use Q for fetch single animal
+		if (thingsBeingHeld < 6) {
+			Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
+			if (cage != null) {
+				
+				string existingAnimal = getCagedAnimalName(cage);
+				Debug.Log("Animal to be removed:  " + existingAnimal);
+				if (decrCagedAnimal(cage)) {
+					Transform animal = getACagedAnimal(cage);
+
+					animal.parent = gameObject.transform;
+					animal.localPosition = positionStack[thingsBeingHeld]; 
+					thingsBeingHeld++;					
+				}
+
+
+			}
+		}
 	}
 
 	void addAnimalToCage(Direction dir) {
