@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-// using UnityStandardAssets._2D;
+using UnityStandardAssets._2D;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
@@ -53,11 +53,14 @@ public class Player : MonoBehaviour {
 
     public void SpawnAt(GameObject myPlayer)
     {
-		// Camera.main.GetComponent<Camera2DFollow>().target = myPlayer.transform;
+		Camera.main.GetComponent<Camera2DFollow>().target = myPlayer.transform;
 		myPlayer.GetComponent<BoxCollider2D> ().enabled = true;
 
     }
 	void Awake(){
+		Debug.Log("Waking up");
+		currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
+
 		DontDestroyOnLoad (this.gameObject);
 		GameState.hitButton = false;
 		GameState.stayButton = false;
@@ -80,6 +83,25 @@ public class Player : MonoBehaviour {
 
 	}
 
+
+             void OnEnable()
+             {
+              //Tell our 'OnLevelFinishedLoading' function to start listening for a scene change as soon as this script is enabled.
+                 SceneManager.sceneLoaded += OnLevelFinishedLoading;
+             }
+         
+             void OnDisable()
+             {
+             //Tell our 'OnLevelFinishedLoading' function to stop listening for a scene change as soon as this script is disabled. Remember to always have an unsubscription for every delegate you subscribe to!
+                 SceneManager.sceneLoaded -= OnLevelFinishedLoading;
+             }	
+	void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
+	{
+		Debug.Log("Level Loaded");
+		Debug.Log(scene.name);
+		Debug.Log(mode);
+		currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -101,9 +123,14 @@ public class Player : MonoBehaviour {
 		// else {
 		// 	animator.SetBool("isMoving", false);
 		// }
+			if (currentCell != null && currentCell.name.StartsWith("exit")) {
+				string scene = currentCell.name;
+				SpawnPoint.SwitchToLevel (this.gameObject);
+				currentCell = null;
+				SceneManager.LoadScene(scene);
+			}
 
-
-			if (!stillMoving) {
+			if (currentCell != null && !stillMoving) {
 				int horizontal = 0;  	//Used to store the horizontal move direction.
 				int vertical = 0;		//Used to store the vertical move direction.
 				

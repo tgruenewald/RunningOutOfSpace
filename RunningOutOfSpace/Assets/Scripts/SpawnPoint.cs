@@ -26,9 +26,8 @@ public class SpawnPoint : MonoBehaviour {
 
 	public static void SwitchToLevel(GameObject playerObject)
 	{
-		playerObject.GetComponent<Transform>().position = GameObject.FindObjectsOfType<SpawnPoint>()[0].GetComponent<Transform>().position;
-		playerObject.GetComponent<BoxCollider2D> ().enabled = false;
-		GameState.SetPlayerDroplet(playerObject);
+		
+		playerObject.GetComponent<Player>().currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
 		//GameState.GetPlayerDroplet().StopAllAudio();
 	}	
 }
