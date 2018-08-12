@@ -244,11 +244,12 @@ public class Player : MonoBehaviour {
 			else {
 				// for all other drops
 				
-				// wood + wood to make cage
+				
 				string targetItem = GetCellName(currentCell.getFacingDirection(lastDirection));
 				string currentItem = NameOfTopOfStack();
 
 				Debug.Log("Placing down something else:  [" +currentItem +  "] --> [" + targetItem + "]");
+				// wood + wood to make cage
 				if (currentItem != null && currentItem == "wood") {
 					if (targetItem != null) {
 						if (targetItem == "wood") {
@@ -260,6 +261,29 @@ public class Player : MonoBehaviour {
 						}
 					}
 				}
+
+
+				// animals in cages
+				if (currentItem != null && (currentItem == "rabbit" || currentItem == "chicken" || currentItem == "fox" || currentItem == "raptor" || currentItem == "unicorn" )) {
+					if (targetItem != null) {
+						if (targetItem == "good_cage") {
+							//placeItemInCell(lastDirection, removeTopItem());
+							addAnimalToCage(lastDirection, removeTopItem());	
+
+							// parent the animal to the cage 					
+						}						
+					}
+				}
+
+				// add hay to cages
+				if (currentItem != null && currentItem == "hay") {
+					if (targetItem != null) {
+						if (targetItem == "cage") {
+						}						
+					}
+				}
+
+		
 
 			}
 			
@@ -337,14 +361,33 @@ public class Player : MonoBehaviour {
 	void placeItemInCell(Direction dir, Transform item) {
 		// remove any items already there.
 		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
-		foreach (Transform child in currentCell.getFacingDirection(lastDirection).transform) {
+        foreach (Transform child in currentCell.getFacingDirection(lastDirection).transform) {
 			if (child.gameObject.name != "noah_marker")
-     			GameObject.Destroy(child.gameObject);
- 		}
+				GameObject.Destroy(child.gameObject);
+        }
 
 		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = item.gameObject;
 		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
-		item.parent = currentCell.getFacingDirection(lastDirection).transform;		
+		item.parent = currentCell.getFacingDirection(lastDirection).transform;
+
+	}
+
+	Transform findCage(Transform cell) {
+		foreach (Transform child in cell) {
+			if (child.gameObject.name == "cage(Clone)") {
+				return child;
+			}
+
+		}
+		return null;
+	}
+
+	void addAnimalToCage(Direction dir, Transform animal) {
+		Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
+		if (cage != null) {
+			animal.parent = cage;
+			animal.transform.localPosition = new Vector3(-2f, -1f, 0f);
+		}
 	}
 	Transform removeTopItem() {
 		if (thingsBeingHeld > 0) {
