@@ -35,6 +35,12 @@ public class Player : MonoBehaviour {
 	private int thingsBeingHeld = 0;
 	public GameObject[] inventory = new GameObject[6];
 
+	public Vector3[] positionStack = new Vector3[]  { new Vector3(0,6f,0),
+													  new Vector3(0,13.5f,0), 
+													  new Vector3(0,17.3f,0), 
+													  new Vector3(0,20.5f,0), 
+													  new Vector3(0,23.7f,0)	};
+
 	private GameObject wall = null;
 	private GameObject ladder = null;
 	// Use this for initialization
@@ -178,7 +184,7 @@ public class Player : MonoBehaviour {
 							// Transform[] items = GetComponentsInChildren<Transform>();
 
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = positionStack[thingsBeingHeld];			
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
 				thingsBeingHeld++;
 
@@ -191,12 +197,17 @@ public class Player : MonoBehaviour {
 			// drop something
 			Debug.Log("Dropping");
 			if (targetCell != null &&  thingsBeingHeld > 0 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
-				
-				Transform[] items = GetComponentsInChildren<Transform>();	
-				Debug.Log("Dropping " + items[thingsBeingHeld].name);
-				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
+				Stack<Transform> stack = new Stack<Transform>();
+				// Transform[] items = GetComponentsInChildren<Transform>();	
+				foreach( Transform tr in transform) {
+					Debug.Log("Name:  " + tr.name);
+					stack.Push(tr);
+				}
+				Transform lastChild = stack.Pop();
+
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = lastChild.gameObject;
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
-				items[thingsBeingHeld].parent = currentCell.getFacingDirection(lastDirection).transform;
+				lastChild.parent = currentCell.getFacingDirection(lastDirection).transform;
 				thingsBeingHeld--;
 			}
 			
