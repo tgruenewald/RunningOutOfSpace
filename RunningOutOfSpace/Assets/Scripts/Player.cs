@@ -206,7 +206,10 @@ public class Player : MonoBehaviour {
 					break;
 				}
 			}
+		if (Input.GetKeyDown(KeyCode.Q)) {
+			Debug.Log("Target cell name: " + targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name);
 
+		}
 		if (Input.GetKeyDown(KeyCode.E)) {
 			// pick up something
 
@@ -217,8 +220,6 @@ public class Player : MonoBehaviour {
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = positionStack[thingsBeingHeld];			
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
 				thingsBeingHeld++;
-
-
 			}
 
 		
@@ -239,6 +240,27 @@ public class Player : MonoBehaviour {
 				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
 				lastChild.parent = currentCell.getFacingDirection(lastDirection).transform;
 				thingsBeingHeld--;
+			}
+			else {
+				// for all other drops
+				
+				// wood + wood to make cage
+				string targetItem = GetCellName(currentCell.getFacingDirection(lastDirection));
+				string currentItem = NameOfTopOfStack();
+
+				Debug.Log("Placing down something else:  [" +currentItem +  "] --> [" + targetItem + "]");
+				if (currentItem != null && currentItem == "wood") {
+					if (targetItem != null) {
+						if (targetItem == "wood") {
+							// then make a cage
+							Transform throwaway = removeTopItem();
+							var gObj = (GameObject)Instantiate(Resources.Load("prefab/" + "cage"), GetComponent<Transform>().position, GetComponent<Transform>().rotation) ;
+
+							placeItemInCell(lastDirection, gObj.transform);
+						}
+					}
+				}
+
 			}
 			
 
@@ -312,7 +334,48 @@ public class Player : MonoBehaviour {
 			stillMoving = false;
 		}     
 
-
+	void placeItemInCell(Direction dir, Transform item) {
+		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = item.gameObject;
+		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
+		item.parent = currentCell.getFacingDirection(lastDirection).transform;		
+	}
+	Transform removeTopItem() {
+		if (thingsBeingHeld > 0) {
+			Stack<Transform> stack = new Stack<Transform>();
+			// Transform[] items = GetComponentsInChildren<Transform>();	
+			foreach( Transform tr in transform) {
+				stack.Push(tr);
+			}
+			thingsBeingHeld--;
+			Transform lastChild = stack.Pop();	
+		return lastChild;	
+		}
+		else {
+			return null;
+		}
+	}
+	string NameOfTopOfStack() {
+		Stack<Transform> stack = new Stack<Transform>();
+		// Transform[] items = GetComponentsInChildren<Transform>();	
+		foreach( Transform tr in transform) {
+			Debug.Log("Name:  " + tr.name);
+			stack.Push(tr);
+		}
+		Transform lastChild = stack.Peek();	
+		if (lastChild != null) {
+			return lastChild.gameObject.name.Replace("(Clone)", "");
+		}
+		else {
+			return null;
+		}
+			
+	}
+	string GetCellName(Cell cell) {
+		if (cell != null && cell.transform.GetChild(0).GetComponent<TileContent>().cellContent != null)
+			return cell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name;
+		else
+			return null;
+	}
     void Flip()
     {
         //Debug.Log("switching...");
