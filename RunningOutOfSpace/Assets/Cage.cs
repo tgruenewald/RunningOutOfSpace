@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Cage : MonoBehaviour {
 
     public int pop = 0;
-    public int hearts = 0;
+    public int hearts = 0; // 0 to 3
     public enum Health {Green, Yellow, Red};
     public Health health = Health.Yellow;
 	// Use this for initialization

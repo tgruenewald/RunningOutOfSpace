@@ -253,7 +253,7 @@ public class Player : MonoBehaviour {
 					if (targetItem != null) {
 						if (targetItem == "wood") {
 							// then make a cage
-							Transform throwaway = removeTopItem();
+							Destroy(removeTopItem().gameObject);
 							var gObj = (GameObject)Instantiate(Resources.Load("prefab/" + "cage"), GetComponent<Transform>().position, GetComponent<Transform>().rotation) ;
 
 							placeItemInCell(lastDirection, gObj.transform);
@@ -335,6 +335,13 @@ public class Player : MonoBehaviour {
 		}     
 
 	void placeItemInCell(Direction dir, Transform item) {
+		// remove any items already there.
+		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
+		foreach (Transform child in currentCell.getFacingDirection(lastDirection).transform) {
+			if (child.gameObject.name != "noah_marker")
+     			GameObject.Destroy(child.gameObject);
+ 		}
+
 		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = item.gameObject;
 		currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
 		item.parent = currentCell.getFacingDirection(lastDirection).transform;		
@@ -348,7 +355,7 @@ public class Player : MonoBehaviour {
 			}
 			thingsBeingHeld--;
 			Transform lastChild = stack.Pop();	
-		return lastChild;	
+			return lastChild;	
 		}
 		else {
 			return null;
