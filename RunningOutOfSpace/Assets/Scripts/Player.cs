@@ -53,7 +53,8 @@ public class Player : MonoBehaviour {
 
     public void SpawnAt(GameObject myPlayer)
     {
-		Camera.main.GetComponent<Camera2DFollow>().target = myPlayer.transform;
+		//Camera.main.GetComponent<Camera2DFollow>().target = myPlayer.transform;
+		Camera.main.transform.parent = myPlayer.transform;
 		myPlayer.GetComponent<BoxCollider2D> ().enabled = true;
 
     }
@@ -100,9 +101,18 @@ public class Player : MonoBehaviour {
 		Debug.Log("Level Loaded");
 		Debug.Log(scene.name);
 		Debug.Log(mode);
-		Camera.main.GetComponent<Camera2DFollow>().target = gameObject.transform;
+		//Camera.main.GetComponent<Camera2DFollow>().target = gameObject.transform;
 		currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
 	}
+
+	void LoadScene(string SceneToLoad)
+	{
+		Scene scene = SceneManager.GetSceneByName(SceneToLoad);
+		if ((scene != null) && (!scene.isLoaded))
+		{
+			SceneManager.LoadScene(SceneToLoad, LoadSceneMode.Additive);
+		}
+	}	
 	
 	// Update is called once per frame
 	void Update () {
@@ -129,7 +139,8 @@ public class Player : MonoBehaviour {
 				SpawnPoint.SwitchToLevel (this.gameObject);
 				GameState.SetPlayerDroplet(this.gameObject);
 				currentCell = null;
-				SceneManager.LoadScene(scene);
+				LoadScene(scene);
+				//SceneManager.LoadScene(scene);
 			}
 
 			if (currentCell != null && !stillMoving) {
