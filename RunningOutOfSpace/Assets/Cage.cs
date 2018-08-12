@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class Cage : MonoBehaviour {
-    public int maxHealth;
-    public int Health;
-    public Slider healthbar;
-    Slider newHealth;
-    public Canvas MainUI;
-    Vector3 barposition;
+
+    public int pop = 0;
+    public int hearts = 0;
+    public enum Health {Green, Yellow, Red};
+    public Health health = Health.Yellow;
 	// Use this for initialization
 	void Start () {
-        Health = maxHealth;
 	}
     void Awake()
     {
@@ -21,15 +19,5 @@ public class Cage : MonoBehaviour {
     void Update () {
 		
 	}
-    void Createhealthbar()
-    {
-        barposition = Camera.main.WorldToScreenPoint(transform.position);
-        barposition = new Vector3(barposition.x,barposition.y - 5);
-
-        newHealth = GameObject.Instantiate(healthbar, barposition, Quaternion.identity);
-    }
-    public void depricate()
-    {
-
-    }
+    
 }

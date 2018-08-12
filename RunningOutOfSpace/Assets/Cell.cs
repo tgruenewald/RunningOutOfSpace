@@ -157,7 +157,7 @@ public class Cell : MonoBehaviour {
             }
             else if (RanValue <= WoodPercent && RanValue > ChickenPercent)
             {
-				GetLoot("wood");
+				GetLoot("cage");
                 //return(Hay);
             }			
             else if (RanValue <= HayPercent && RanValue > WoodPercent)
