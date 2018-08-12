@@ -37,35 +37,42 @@ public class RandomPer : MonoBehaviour {
             if (RanValue < UnicornPercent)
             {
                 // return(Unicorn);
+                return (null);
             }
             else if (RanValue < RaptorPercent && RanValue > UnicornPercent)
             {
                 //return(Raptor);
+                return (null);
             }
             else if (RanValue < BunnyPercent && RanValue > RaptorPercent)
             {
                 //return(Bunny);
+                return (null);
             }
             else if (RanValue < FoxPercent && RanValue > BunnyPercent)
             {
                 //return(Fox);
+                return (null);
             }
             else if (RanValue < ChickenPercent && RanValue > FoxPercent)
             {
                 //return(Chicken);
+                return (null);
             }
             else if (RanValue < HayPercent && RanValue > ChickenPercent)
             {
                 //return(Hay);
+                return (null);
             }
             else if (RanValue < WoodPercent && RanValue > HayPercent)
             {
                 //return(Wood);
-
+                return (null);
             }
             else
             {
                 //return(nothing);
+                return (null);
             }
         }
         else
