@@ -17,6 +17,19 @@ public class Cell : MonoBehaviour {
 		 FindNeighbours();
 	}
 
+	public Cell getFacingDirection(Player.Direction direction) {
+		switch(direction) {
+			case Player.Direction.Down:
+				return getDown();
+			case Player.Direction.Up:
+				return getUp();
+			case Player.Direction.Right:
+				return getForward();
+
+		}
+		return getReverse();
+	}
+
 	public Cell getForward() {
 		return this.forward;
 	}

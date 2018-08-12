@@ -12,6 +12,9 @@ public class Player : MonoBehaviour {
 				private float inverseMoveTime;			//Used to make movement more efficient.
 		public float moveTime = 0.1f;			//Time it will take object to move, in seconds.
     public Sprite front;
+	public enum Direction  {Right, Down, Up, Left};
+
+	Player.Direction lastDirection = Direction.Right;
     public Sprite left;
     public Sprite back;
 	private float move;
@@ -95,12 +98,12 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.E)) {
 			// pick up something
 
-			if (thingsBeingHeld < 6 && currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
+			if (thingsBeingHeld < 6 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null) {
 							// Transform[] items = GetComponentsInChildren<Transform>();
 
-				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
-				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
-				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.parent = gameObject.transform;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.localPosition = new Vector3(0,6f,0);			
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = null;
 				thingsBeingHeld++;
 
 
@@ -125,13 +128,13 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			// drop something
 			Debug.Log("Dropping");
-			if (thingsBeingHeld > 0 && currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
+			if (thingsBeingHeld > 0 && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent == null) {
 				
 				Transform[] items = GetComponentsInChildren<Transform>();	
 				Debug.Log("Dropping " + items[thingsBeingHeld].name);
-				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
-				currentCell.getForward().transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getForward().transform.position;
-				items[thingsBeingHeld].parent = currentCell.getForward().transform;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent = items[thingsBeingHeld].gameObject;
+				currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent.transform.position = currentCell.getFacingDirection(lastDirection).transform.position;
+				items[thingsBeingHeld].parent = currentCell.getFacingDirection(lastDirection).transform;
 				thingsBeingHeld--;
 			}
 			
@@ -148,7 +151,8 @@ public class Player : MonoBehaviour {
 				horizontal = (int) (Input.GetAxisRaw ("Horizontal"));
 				
 				//Get input from the input manager, round it to an integer and store in vertical to set y axis move direction
-				vertical = (int) (Input.GetAxisRaw ("Vertical"));		
+				vertical = (int) (Input.GetAxisRaw ("Vertical"));	
+				// Debug.Log("H: " + horizontal + ", V: " + vertical);	
 
 				if(horizontal != 0)
 				{
@@ -157,25 +161,28 @@ public class Player : MonoBehaviour {
 
 				if(horizontal != 0 || vertical != 0)
 				{
-					RaycastHit2D hit;
 					if (horizontal > 0) { 
 						// move forward
+						lastDirection = Direction.Right;
 						targetCell = currentCell.getForward();
 
 
 					}
 					if (horizontal < 0) {
 						// move backward
+						lastDirection = Direction.Left;
 						targetCell = currentCell.getReverse();
 					}
 
 					if (vertical > 0) { 
 						// move up
+						lastDirection = Direction.Up;
 						targetCell = currentCell.getUp();					
 					}
 
 					if (vertical < 0) {
 						// move down
+						lastDirection = Direction.Down;
 						targetCell = currentCell.getDown();					
 					}
 				
