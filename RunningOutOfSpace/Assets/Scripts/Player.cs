@@ -217,6 +217,10 @@ public class Player : MonoBehaviour {
 					break;
 				}
 			}
+		if (Input.GetKeyDown(KeyCode.Q)) {
+			Debug.Log("Starting destroy all");
+			destroyAllAnimalsInCage(lastDirection);
+		}
 		if (Input.GetKeyDown(KeyCode.F)) {
 			//Debug.Log("Target cell name: " + targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name);
 			// get one animal from cage
@@ -477,6 +481,30 @@ public class Player : MonoBehaviour {
 		return null;
 	}
 
+	void destroyAllAnimalsInCage(Direction dir) {
+		Debug.Log("destroy all animals");
+		Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
+		if (cage != null) {
+			int counter = 10;
+			Debug.Log("entering while loop");
+			while (decrCagedAnimal(cage)) {
+				Debug.Log("in loop");
+				Transform animal = getACagedAnimal(cage);
+				Debug.Log("animal:  " + animal);
+				animal.parent = null;
+				Destroy(animal.gameObject);
+				counter--;
+				if (counter <= 0) {
+					Debug.Log("baling on counter");
+					break;
+				}
+
+			}
+
+		}
+		Debug.Log("exiting destroy all");
+	}
+
 	void removeAnimalFromCage(Direction dir) {
 		// use Q for fetch single animal
 		if (thingsBeingHeld < 6) {
@@ -505,6 +533,8 @@ public class Player : MonoBehaviour {
 			string existingAnimal = getCagedAnimalName(cage);
 			Debug.Log("Existing animal:  " + existingAnimal);
 			string topAnimal = NameOfTopOfStack() + "(Clone)";
+
+			// adding scenario
 			if (existingAnimal == null || topAnimal == existingAnimal) {
 				if (incrCagedAnimal(cage)) {
 					// then there is enough room
@@ -512,7 +542,30 @@ public class Player : MonoBehaviour {
 					animal.parent = cage;
 					animal.transform.localPosition = new Vector3(-2f, -1f, 0f);					
 				}
-
+			}
+			else if (topAnimal != existingAnimal) {
+				// feeding scenario
+				if ((topAnimal == "rabbit(Clone)") && (existingAnimal != "chicken(Clone)")) {
+					// then feed the rabbit to it
+					
+				}
+				if ((topAnimal == "chicken(Clone)") && (existingAnimal != "rabbit(Clone)")) {
+					// then feed the chicken to it
+				}
+				if (topAnimal == "fox(Clone)") {
+					// then feed the fox to it
+				}
+				if (topAnimal == "raptor(Clone)") {
+					// then feed the raptor to it
+					Debug.Log("Feeding raptor to rabbits");
+					if (existingAnimal == "rabbit(Clone)") {
+						destroyAllAnimalsInCage(dir);
+						Transform animal =  removeTopItem();
+						animal.parent = cage;
+						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
+					}
+				}
+																
 			}
 
 		}
