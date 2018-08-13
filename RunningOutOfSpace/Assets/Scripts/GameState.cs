@@ -25,6 +25,13 @@ public static class GameState
 	public static bool hitButton = false;
 	public static bool stayButton = false;
 
+	public static int rabbit = 0;
+	public static int chicken = 0;
+	public static int fox = 0;
+	public static int raptor = 0;	
+	public static int unicorn = 0;
+
+
 
 	public static void SetPlayerDroplet(GameObject droplet){
 		GameState.droplet = droplet;

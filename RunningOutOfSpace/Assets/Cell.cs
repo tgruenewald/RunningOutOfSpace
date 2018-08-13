@@ -15,14 +15,14 @@ public class Cell : MonoBehaviour {
 	public float y;
 
 	// for random selection
-    public float RandomMax;
-    public float UnicornPercent;
-    public float RaptorPercent;
-    public float BunnyPercent;
-    public float FoxPercent;
-    public float ChickenPercent;
-    public float WoodPercent;
-    public float HayPercent;	
+    public float RandomMax = 120;
+    public float UnicornPercent = 10;
+    public float RaptorPercent = 20;
+    public float BunnyPercent = 35;
+    public float FoxPercent = 45;
+    public float ChickenPercent = 55;
+    public float WoodPercent = 90;
+    public float HayPercent = 120;
 
 	// Use this for initialization
 	void Start () {
@@ -31,9 +31,10 @@ public class Cell : MonoBehaviour {
 		 FindNeighbours();
 
 		if (this.gameObject.name == "loot_drop") {	
-			// StartCoroutine(RandomlyGetLoot(2f));
+			StartCoroutine(RandomlyGetLoot(2f));
 		}	 
 		else {
+			// this is how cells clean up animals left lying around
 	        StartCoroutine(RemoveThrowAway(3f));
 
 		}

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
     public int time = 5;
+
     public int wood;
     public int Max_Hay = 100;
     public int Hayamount;
@@ -48,17 +49,42 @@ public class GameManager : MonoBehaviour {
     {
         GameObject text = GameObject.Find("FloodTime");
         time = 40;
+        int total = 0;
         while (time > 0) {
             yield return new WaitForSeconds(TimeScale);
             text.GetComponent<Text>().text = "Days to survive " + time;
-            time--;                   
+
+            // count
+            int chicken = GameObject.FindGameObjectsWithTag("chicken").Length;
+            int rabbit = GameObject.FindGameObjectsWithTag("rabbit").Length;
+            int fox = GameObject.FindGameObjectsWithTag("fox").Length;
+            int raptor = GameObject.FindGameObjectsWithTag("raptor").Length;
+            int unicorn = GameObject.FindGameObjectsWithTag("unicorn").Length;
+
+            total = chicken + rabbit + fox + raptor + unicorn;
+            if (total == 0) {
+                text.GetComponent<Text>().text = "You made it to day " + time;
+                break;
+            }
+            time--;      
+
         }
 
-        // TODO: you made it.  Load the next screen
+        // TODO: you made it.  Load the next screen fo score
+        // if the total is greater than 0.
+            if (total == 0) {
+                text.GetComponent<Text>().text = "You made it to day " + time;
+            }
+            else {
+                text.GetComponent<Text>().text = "Score " + total;
+
+            }        
     }
     IEnumerator FloodTime() {
         yield return new WaitForSeconds(5f);
-        GameObject.Find("close_door").transform.GetChild(0).GetComponent<TileContent>().cellContent =  GameObject.Find("starting_cell");;
+        var gObj = (GameObject)Instantiate(Resources.Load("prefab/" + "cage"), GetComponent<Transform>().position, GetComponent<Transform>().rotation) ;
+
+        GameObject.Find("close_door").transform.GetChild(0).GetComponent<TileContent>().cellContent =  gObj; // just some object
         GameObject.Find("ramp").GetComponent<SpriteRenderer>().enabled = false;
         GameObject.Find("earth3").GetComponent<SpriteRenderer>().enabled = false;  
         StartCoroutine(FortyDays());      

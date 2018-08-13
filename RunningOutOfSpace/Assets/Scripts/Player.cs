@@ -66,6 +66,11 @@ public class Player : MonoBehaviour {
 		DontDestroyOnLoad (this.gameObject);
 		GameState.hitButton = false;
 		GameState.stayButton = false;
+		GameState.chicken = 0;
+		GameState.rabbit = 0;
+		GameState.fox = 0;
+		GameState.raptor = 0;
+		GameState.unicorn = 0;
 	}	
 	void Start () {
 		// groundCheck = GetComponent<CircleCollider2D>();
@@ -197,7 +202,9 @@ public class Player : MonoBehaviour {
 					}
 
 					// search for cage
-					if (currentCell != null && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null ) {
+					if (currentCell != null && 
+					currentCell.getFacingDirection(lastDirection) != null &&
+					currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null ) {
 						Transform cellCage = getCage(targetCell.transform);
 						Transform animal = getACagedAnimal(cellCage);
 						if (animal != null) {
@@ -726,6 +733,46 @@ public class Player : MonoBehaviour {
 						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
 					}
 				}
+				if (topAnimal == "rabbit(Clone)") {
+					// then feed the fox to it
+					if (existingAnimal == "raptor(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}		
+				if (topAnimal == "rabbit(Clone)") {
+					// then feed the fox to it
+					if (existingAnimal == "fox(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}
+				if (topAnimal == "chicken(Clone)") {
+					// then feed the fox to it
+					if (existingAnimal == "fox(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}										
+				if (topAnimal == "chicken(Clone)") {
+					// then feed the fox to it
+					if (existingAnimal == "raptor(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}								
+				if (topAnimal == "fox(Clone)") {
+					// then feed the fox to it
+					if (existingAnimal == "raptor(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}				
 				if (topAnimal == "raptor(Clone)") {
 					// then feed the raptor to it
 					Debug.Log("Feeding raptor to rabbits");
@@ -746,7 +793,15 @@ public class Player : MonoBehaviour {
 						animal.parent = cage;
 						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
 					}
-				}				
+				}	
+				if (topAnimal == "raptor(Clone)") {
+					// then feed the raptor to it
+					if (existingAnimal == "unicorn(Clone)") {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+					}
+				}								
 																
 			}
 

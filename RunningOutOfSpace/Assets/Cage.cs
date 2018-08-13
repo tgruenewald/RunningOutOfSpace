@@ -11,9 +11,9 @@ public class Cage : MonoBehaviour {
 
     Player player;
 
-    public float healthTime = 10f;
+    public float healthTime = 60f;
 
-    public float reproTime = 5f;
+    public float reproTime = 10f;
 
     public float thoughtTime = 2f;
 	// Use this for initialization
@@ -54,14 +54,16 @@ public class Cage : MonoBehaviour {
         {
             yield return new WaitForSeconds(waitTime);
             Debug.Log("Reducing health");
-            player.decrCageHeart(transform);
-            if (player.cageHeartCount(transform) == 0) {
-                // destroy all animals
-                Debug.Log("Removing all animals!!!!!!!!");
-                player.removeAllAnimalsFromCage(transform);
-            }
-            else {
-                Debug.Log("Still hearts left");
+            if (player.cageAnimalCount(transform) > 0) {
+                player.decrCageHeart(transform);
+                if (player.cageHeartCount(transform) == 0) {
+                    // destroy all animals
+                    Debug.Log("Removing all animals!!!!!!!!");
+                    player.removeAllAnimalsFromCage(transform);
+                }
+                else {
+                    Debug.Log("Still hearts left");
+                }
             }
 
 
