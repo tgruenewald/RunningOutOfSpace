@@ -396,7 +396,7 @@ public class Player : MonoBehaviour {
 		}
 		return null;
 	}
-	Transform getACagedAnimal(Transform cell) {
+	public Transform getACagedAnimal(Transform cell) {
 		foreach (Transform animal in cell.transform) {
 			string currentItem =  animal.gameObject.name;
 			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
@@ -451,7 +451,7 @@ public class Player : MonoBehaviour {
 		return true;
 	}	
 
-	bool incrCagedAnimal(Transform cell) {
+	public bool incrCagedAnimal(Transform cell) {
 		foreach (Transform animal in cell.transform) {
 			string currentItem =  animal.gameObject.name;
 			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
@@ -506,6 +506,17 @@ public class Player : MonoBehaviour {
 		enableSpriteByName(cell, "heartfull_" + next);
 		disableSpriteByName(cell, "heartempty_" +  next);		
 
+	}
+
+	public int cageAnimalCount(Transform cell) {
+		int count = 0;
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+				count++;
+			}
+		}		
+		return count;
 	}
 
 	public int cageHeartCount(Transform cell) {
