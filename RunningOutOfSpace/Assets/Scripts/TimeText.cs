@@ -12,7 +12,7 @@ public class TimeText : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        string Jay = "Time" + " " + dang.GetComponent<GameManager>().Timeleft().ToString();
+        string Jay = "Days Remaining Until Flood" + " " + dang.GetComponent<GameManager>().Timeleft().ToString();
         m_TimeText.text = Jay;
     }
 }

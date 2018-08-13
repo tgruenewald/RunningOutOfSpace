@@ -288,7 +288,7 @@ public class Player : MonoBehaviour {
 
 
 				// animals in cages
-				if (currentItem != null && (currentItem == "rabbit" || currentItem == "chicken" || currentItem == "fox" || currentItem == "raptor" || currentItem == "unicorn" )) {
+				if (currentItem != null && (currentItem == "hay" || currentItem == "rabbit" || currentItem == "chicken" || currentItem == "fox" || currentItem == "raptor" || currentItem == "unicorn" )) {
 					if (targetItem != null) {
 						if (targetItem == "good_cage") {
 							//placeItemInCell(lastDirection, removeTopItem());
@@ -299,15 +299,7 @@ public class Player : MonoBehaviour {
 					}
 				}
 
-				// add hay to cages
-				if (currentItem != null && currentItem == "hay") {
-					if (targetItem != null) {
-						if (targetItem == "cage") {
-						}						
-					}
-				}
-
-		
+	
 
 			}
 			
@@ -650,10 +642,19 @@ public class Player : MonoBehaviour {
 				}
 			}
 			else if (topAnimal != existingAnimal) {
+				if (topAnimal == "hay(Clone)") {
+					if ((existingAnimal == "rabbit(Clone)") || (existingAnimal == "chicken(Clone)")) {
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);						
+					}					
+				}
 				// feeding scenario
 				if ((topAnimal == "rabbit(Clone)") && (existingAnimal != "chicken(Clone)")) {
 					// then feed the rabbit to it
-					
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);					
 				}
 				if ((topAnimal == "chicken(Clone)") && (existingAnimal != "rabbit(Clone)")) {
 					// then feed the chicken to it
