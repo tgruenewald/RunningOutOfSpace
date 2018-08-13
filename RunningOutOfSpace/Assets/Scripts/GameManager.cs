@@ -104,6 +104,12 @@ public class GameManager : MonoBehaviour {
             text.GetComponent<Text>().text = "Days Remaining Until Flood " + time;
             time--;            
 
+            GameState.chicken = GameObject.FindGameObjectsWithTag("chicken").Length;
+            GameState.rabbit = GameObject.FindGameObjectsWithTag("rabbit").Length;
+            GameState.fox = GameObject.FindGameObjectsWithTag("fox").Length;
+            GameState.raptor = GameObject.FindGameObjectsWithTag("raptor").Length;
+            GameState.unicorn = GameObject.FindGameObjectsWithTag("unicorn").Length;
+
         }
         text.GetComponent<Text>().text = "Return to ark";
         // flood starts

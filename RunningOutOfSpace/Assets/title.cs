@@ -14,6 +14,9 @@ public class title : MonoBehaviour {
 	void Update () {
 		
 	}
+	public void tut() {
+		SceneManager.LoadScene("tut");
+	}	
 	public void start() {
 		SceneManager.LoadScene("exit_ark");
 	}
