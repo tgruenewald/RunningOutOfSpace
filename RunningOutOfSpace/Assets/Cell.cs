@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour {
 	public List<Cell> neighbours = new List<Cell>();
+    Player player;
+
 	public Cell up;
 	public Cell down;
 	public Cell forward;
@@ -24,12 +26,26 @@ public class Cell : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        player = GameState.GetPlayerDroplet();
+
 		 FindNeighbours();
+
 		if (this.gameObject.name == "loot_drop") {	
 			// StartCoroutine(RandomlyGetLoot(2f));
 		}	 
-	}
+		else {
+	        StartCoroutine(RemoveThrowAway(3f));
 
+		}
+	}
+    private IEnumerator RemoveThrowAway(float waitTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(waitTime);
+			player.removeAnimalsFromCells(transform);
+		}
+	}
 	public Cell getFacingDirection(Player.Direction direction) {
 		switch(direction) {
 			case Player.Direction.Down:

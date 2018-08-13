@@ -394,8 +394,21 @@ public class Player : MonoBehaviour {
 			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" ))
 				return currentItem;
 		}
-		return null;
+		return null; 
 	}
+
+	public void removeAnimalsFromCells(Transform cell) {
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+				if (animal != null) {
+					animal.parent = null;
+					Destroy(animal.gameObject);
+				}
+			}
+		}		
+	}
+
 	public Transform getACagedAnimal(Transform cell) {
 		foreach (Transform animal in cell.transform) {
 			string currentItem =  animal.gameObject.name;
