@@ -14,6 +14,8 @@ public class Cage : MonoBehaviour {
     public float healthTime = 10f;
 
     public float reproTime = 5f;
+
+    public float thoughtTime = 2f;
 	// Use this for initialization
 	void Start () {
         player = GameState.GetPlayerDroplet();
@@ -22,6 +24,13 @@ public class Cage : MonoBehaviour {
         StartCoroutine(Reproduce(reproTime));
 
 	}
+
+    private IEnumerator ThoughtTime(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        transform.GetChild(13).GetComponent<SpriteRenderer>().enabled = false;
+        transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+    }    
     private IEnumerator Reproduce(float waitTime)
     {
         while (true)
@@ -57,6 +66,33 @@ public class Cage : MonoBehaviour {
 
 
         }
+    }
+
+    public void activateThought(string animalName) {
+
+        if (animalName == "rabbit(Clone)") {
+            transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().sprite =  Resources.Load<Sprite>("images/hay");    
+        }
+        if (animalName == "chicken(Clone)") {
+            transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().sprite =  Resources.Load<Sprite>("images/hay");    
+        }
+        if (animalName == "fox(Clone)") {
+            transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().sprite =  Resources.Load<Sprite>("images/rabbit");    
+        }
+        if (animalName == "raptor(Clone)") {
+            transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().sprite =  Resources.Load<Sprite>("images/fox");    
+        }
+        if (animalName == "unicorn(Clone)") {
+            transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().sprite =  Resources.Load<Sprite>("images/raptor");    
+        }
+    
+
+        transform.GetChild(13).GetChild(0).transform.localScale = new Vector2(0.5f, 0.5f); 
+        transform.GetChild(13).GetComponent<SpriteRenderer>().enabled = true;
+        transform.GetChild(13).GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+
+        StartCoroutine(ThoughtTime(thoughtTime));
+
     }
     void Awake()
     {

@@ -196,6 +196,15 @@ public class Player : MonoBehaviour {
 						// Move (targetCell.transform.GetChild(0).transform.position.x, targetCell.transform.GetChild(0).transform.position.y, out hit);
 					}
 
+					// search for cage
+					if (currentCell != null && currentCell.getFacingDirection(lastDirection).transform.GetChild(0).GetComponent<TileContent>().cellContent != null ) {
+						Transform cellCage = getCage(targetCell.transform);
+						Transform animal = getACagedAnimal(cellCage);
+						if (animal != null) {
+							cellCage.gameObject.GetComponent<Cage>().activateThought(animal.gameObject.name);
+						}
+					}
+
 				}
 				switch( horizontal)
 				{
@@ -316,6 +325,17 @@ public class Player : MonoBehaviour {
                        // Speed of movement
 		//Move returns true if it is able to move and false if not. 
 		//Move takes parameters for x direction, y direction and a RaycastHit2D to check collision.
+		Transform getCage(Transform cellTransform) {
+			Transform cellCage = null;
+			foreach (Transform child in cellTransform) {
+				if (child.gameObject.name == "cage(Clone)") {
+					cellCage = child;
+					break;
+				}
+			}
+			return cellCage;
+		}
+		
 		protected bool Move (float xDir, float yDir, out RaycastHit2D hit)
 		{
 			//Store start position to move from, based on objects current transform position.
@@ -410,10 +430,12 @@ public class Player : MonoBehaviour {
 	}
 
 	public Transform getACagedAnimal(Transform cell) {
-		foreach (Transform animal in cell.transform) {
-			string currentItem =  animal.gameObject.name;
-			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
-				return animal;
+		if (cell != null) {
+			foreach (Transform animal in cell.transform) {
+				string currentItem =  animal.gameObject.name;
+				if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+					return animal;
+				}
 			}
 		}
 		return null;		
@@ -715,6 +737,16 @@ public class Player : MonoBehaviour {
 						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
 					}
 				}
+				if (topAnimal == "unicorn(Clone)") {
+					// then feed the raptor to it
+					if (existingAnimal == "raptor(Clone)") {
+						destroyAllAnimalsInCage(dir);
+						Transform animal =  removeTopItem();
+						incrCagedAnimal(cage);
+						animal.parent = cage;
+						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
+					}
+				}				
 																
 			}
 
