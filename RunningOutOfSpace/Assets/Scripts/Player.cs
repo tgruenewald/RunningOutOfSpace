@@ -61,6 +61,7 @@ public class Player : MonoBehaviour {
 	void Awake(){
 		Debug.Log("Waking up");
 		currentCell = GameObject.Find("starting_cell").GetComponent<Cell>();
+		GameState.SetPlayerDroplet(this.gameObject);
 
 		DontDestroyOnLoad (this.gameObject);
 		GameState.hitButton = false;
@@ -220,6 +221,13 @@ public class Player : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Q)) {
 			Debug.Log("Starting destroy all");
 			destroyAllAnimalsInCage(lastDirection);
+		}
+		if (Input.GetKeyDown(KeyCode.R)) {
+			// manually reduce hearts
+			Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
+			Debug.Log("Cage is " + cage.transform.parent.gameObject.name);
+			decrCageHeart(cage);
+
 		}
 		if (Input.GetKeyDown(KeyCode.F)) {
 			//Debug.Log("Target cell name: " + targetCell.transform.GetChild(0).GetComponent<TileContent>().cellContent.GetComponent<SpriteRenderer>().sprite.name);
@@ -507,8 +515,28 @@ public class Player : MonoBehaviour {
 		disableSpriteByName(cell, "heartempty_" +  next);		
 
 	}
-	void decrCageHeart(Transform cell) {
+
+	public int cageHeartCount(Transform cell) {
+		int count = 0;
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+
+			}
+			else {
+				if (currentItem.StartsWith("heartfull_")) {
+					if (animal.GetComponent<SpriteRenderer>().enabled) {		
+						++count;
+					}			
+				}
+			}
+		}		
+		return count;
+	}
+
+	public void decrCageHeart(Transform cell) {
 	
+		Debug.Log("Removing a heart");
 		int heartMax = 0;
 		foreach (Transform animal in cell.transform) {
 			string currentItem =  animal.gameObject.name;
@@ -529,10 +557,11 @@ public class Player : MonoBehaviour {
 			}
 			
 		}
-
-		int next = heartMax - 1;
-		enableSpriteByName(cell, "heartfull_" + next);
-		disableSpriteByName(cell, "heartempty_" +  next);		
+		if (heartMax > 0) {
+			int next = heartMax;
+			enableSpriteByName(cell, "heartempty_" + next);
+			disableSpriteByName(cell, "heartfull_" +  next);	
+		}		
 
 	}	
 
@@ -551,25 +580,32 @@ public class Player : MonoBehaviour {
 		return null;
 	}
 
+	public void removeAllAnimalsFromCage(Transform cage) {
+		int counter = 10;
+		Debug.Log("removeAllAnimalsFromCage:  entering while loop");
+		while (decrCagedAnimal(cage)) {
+			Debug.Log("in loop");
+			Transform animal = getACagedAnimal(cage);
+			Debug.Log("animal:  " + animal);
+			if (animal != null) {
+				animal.parent = null;
+				Destroy(animal.gameObject);
+			}
+
+			counter--;
+			if (counter <= 0) {
+				Debug.Log("baling on counter");
+				break;
+			}
+
+		}
+	}
+
 	void destroyAllAnimalsInCage(Direction dir) {
 		Debug.Log("destroy all animals");
 		Transform cage = findCage(currentCell.getFacingDirection(lastDirection).transform);
 		if (cage != null) {
-			int counter = 10;
-			Debug.Log("entering while loop");
-			while (decrCagedAnimal(cage)) {
-				Debug.Log("in loop");
-				Transform animal = getACagedAnimal(cage);
-				Debug.Log("animal:  " + animal);
-				animal.parent = null;
-				Destroy(animal.gameObject);
-				counter--;
-				if (counter <= 0) {
-					Debug.Log("baling on counter");
-					break;
-				}
-
-			}
+			removeAllAnimalsFromCage(cage);
 
 		}
 		Debug.Log("exiting destroy all");
