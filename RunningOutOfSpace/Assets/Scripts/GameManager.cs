@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public int time = 5;
@@ -16,7 +16,13 @@ public class GameManager : MonoBehaviour {
     void Start () {
         StartCoroutine(TimePass());
     }
-	
+	public void title_scene() {
+		SceneManager.LoadScene("title");
+	}	
+
+    public void score_scene() {
+		SceneManager.LoadScene("score");
+	}	
 	// Update is called once per frame
 	void Update () {
        
@@ -71,7 +77,8 @@ public class GameManager : MonoBehaviour {
         }
 
         // TODO: you made it.  Load the next screen fo score
-        // if the total is greater than 0.
+        // if the total is greater than 0.+
+
             if (total == 0) {
                 text.GetComponent<Text>().text = "You made it to day " + time;
             }
