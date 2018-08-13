@@ -31,6 +31,7 @@ public static class GameState
 	public static int raptor = 0;	
 	public static int unicorn = 0;
 
+	public static GameObject myaudioSource = null;
 
 
 	public static void SetPlayerDroplet(GameObject droplet){
