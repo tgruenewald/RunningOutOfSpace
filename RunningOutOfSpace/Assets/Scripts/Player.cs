@@ -405,8 +405,18 @@ public class Player : MonoBehaviour {
 		}
 		return null;		
 	}
+
+	void disableSpriteByName(Transform cell, string name) {
+		Debug.Log("dis - finding sprite:  " + name);
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if (currentItem == name) {
+				animal.GetComponent<SpriteRenderer>().enabled = false;
+			}
+		}		
+	}	
 	void enableSpriteByName(Transform cell, string name) {
-		Debug.Log("finding sprite:  " + name);
+		Debug.Log("en - finding sprite:  " + name);
 		foreach (Transform animal in cell.transform) {
 			string currentItem =  animal.gameObject.name;
 			if (currentItem == name) {
@@ -466,6 +476,66 @@ public class Player : MonoBehaviour {
 		}
 		return true;
 	}
+
+
+	void incrCageHeart(Transform cell) {
+		int heartMax = 0;
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+
+			}
+			else {
+				Debug.Log("incrCageHeart : currentItem " + currentItem);
+				if (currentItem.StartsWith("heartfull_")) {
+
+					if (animal.GetComponent<SpriteRenderer>().enabled) {
+						// then this is the last one, so find next number
+						string n = currentItem.Replace("heartfull_", "");
+						Debug.Log("finding heart " + n);
+						if (int.Parse(n) > heartMax) {
+							heartMax = int.Parse(n);
+						}
+					}
+				}
+			}
+			
+		}
+
+		int next = heartMax + 1;
+		enableSpriteByName(cell, "heartfull_" + next);
+		disableSpriteByName(cell, "heartempty_" +  next);		
+
+	}
+	void decrCageHeart(Transform cell) {
+	
+		int heartMax = 0;
+		foreach (Transform animal in cell.transform) {
+			string currentItem =  animal.gameObject.name;
+			if ((currentItem == "rabbit(Clone)" || currentItem == "chicken(Clone)" || currentItem == "fox(Clone)" || currentItem == "raptor(Clone)" || currentItem == "unicorn(Clone)" )) {
+
+			}
+			else {
+				if (currentItem.StartsWith("heartfull_")) {
+
+					if (animal.GetComponent<SpriteRenderer>().enabled) {
+						// then this is the last one, so find next number
+						string n = currentItem.Replace("heartfull_", "");
+						if (int.Parse(n) > heartMax) {
+							heartMax = int.Parse(n);
+						}
+					}
+				}
+			}
+			
+		}
+
+		int next = heartMax - 1;
+		enableSpriteByName(cell, "heartfull_" + next);
+		disableSpriteByName(cell, "heartempty_" +  next);		
+
+	}	
+
 
 	void emptyCage(Transform cell) {
 		
@@ -551,16 +621,35 @@ public class Player : MonoBehaviour {
 				}
 				if ((topAnimal == "chicken(Clone)") && (existingAnimal != "rabbit(Clone)")) {
 					// then feed the chicken to it
+					if (existingAnimal == "raptor(Clone)" || existingAnimal == "fox(Clone)") {
+						// destroyAllAnimalsInCage(dir);
+						Debug.Log("Feeding chicken to raptor");
+						Transform animal =  removeTopItem();
+						Destroy(animal.gameObject);
+						incrCageHeart(cage);
+
+						// incrCagedAnimal(cage);
+						// animal.parent = cage;
+						// animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
+					}					
 				}
 				if (topAnimal == "fox(Clone)") {
 					// then feed the fox to it
+					if (existingAnimal == "rabbit(Clone)" || existingAnimal == "chicken(Clone)") {
+						destroyAllAnimalsInCage(dir);
+						Transform animal =  removeTopItem();
+						incrCagedAnimal(cage);
+						animal.parent = cage;
+						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
+					}
 				}
 				if (topAnimal == "raptor(Clone)") {
 					// then feed the raptor to it
 					Debug.Log("Feeding raptor to rabbits");
-					if (existingAnimal == "rabbit(Clone)") {
+					if (existingAnimal == "rabbit(Clone)" || existingAnimal == "chicken(Clone)" || existingAnimal == "fox(Clone)") {
 						destroyAllAnimalsInCage(dir);
 						Transform animal =  removeTopItem();
+						incrCagedAnimal(cage);
 						animal.parent = cage;
 						animal.transform.localPosition = new Vector3(-2f, -1f, 0f);	
 					}

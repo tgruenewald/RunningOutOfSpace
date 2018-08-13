@@ -26,7 +26,7 @@ public class Cell : MonoBehaviour {
 	void Start () {
 		 FindNeighbours();
 		if (this.gameObject.name == "loot_drop") {	
-			StartCoroutine(RandomlyGetLoot(2f));
+			// StartCoroutine(RandomlyGetLoot(2f));
 		}	 
 	}
 
@@ -98,7 +98,38 @@ public class Cell : MonoBehaviour {
     }
 	// Update is called once per frame
 	void Update () {
-
+		if (this.gameObject.name == "loot_drop") {	
+	        if (Input.GetKeyDown(KeyCode.Keypad1))
+            {
+				GetLoot("wood");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+				GetLoot("hay");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad3))
+            {
+				GetLoot("rabbit");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad4))
+            {
+				GetLoot("chicken");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad5))
+            {
+				GetLoot("fox");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad6))
+            {
+				GetLoot("raptor");
+			}
+	        if (Input.GetKeyDown(KeyCode.Keypad7))
+            {
+				GetLoot("unicorn");
+			}
+												
+		
+		}
 		
 	}
 
