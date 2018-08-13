@@ -44,11 +44,24 @@ public class GameManager : MonoBehaviour {
     {
         return (time);
     }
+    IEnumerator FortyDays()
+    {
+        GameObject text = GameObject.Find("FloodTime");
+        time = 40;
+        while (time > 0) {
+            yield return new WaitForSeconds(TimeScale);
+            text.GetComponent<Text>().text = "Days to survive " + time;
+            time--;                   
+        }
+
+        // TODO: you made it.  Load the next screen
+    }
     IEnumerator FloodTime() {
         yield return new WaitForSeconds(5f);
         GameObject.Find("close_door").transform.GetChild(0).GetComponent<TileContent>().cellContent =  GameObject.Find("starting_cell");;
         GameObject.Find("ramp").GetComponent<SpriteRenderer>().enabled = false;
-        GameObject.Find("earth3").GetComponent<SpriteRenderer>().enabled = false;        
+        GameObject.Find("earth3").GetComponent<SpriteRenderer>().enabled = false;  
+        StartCoroutine(FortyDays());      
     }
     IEnumerator TimePass()
     {
@@ -59,7 +72,7 @@ public class GameManager : MonoBehaviour {
             time--;            
 
         }
-        
+        text.GetComponent<Text>().text = "Return to ark";
         // flood starts
 
         // rename starting_cell
